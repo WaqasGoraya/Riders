@@ -154,11 +154,14 @@
             },
             success: function(response) {
                 if (response.cart == true && response.order == true && response.mail == 1) {
-                    swal.fire("Suceess!", "Your Order Placed Successfully!!!", "success");
-                    window.location = "{{ route('cart') }}";
+                    swal.fire("Suceess!", "Your Order Placed Successfully!!!", "success").then(function(){
+                        window.location = "{{ route('cart') }}";
+                    });
+                    
                 } else {
-                    swal.fire("STOP!", "Something went wrong please try again!", "error");
-                    window.location = "{{ route('cart') }}";
+                    swal.fire("STOP!", "Something went wrong please try again!", "error").then(function(){
+                        window.location = "{{ route('cart') }}";
+                    });
                 }
             }
         });

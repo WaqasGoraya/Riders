@@ -93,6 +93,7 @@ class CartController extends Controller
     public function doCheckout(Request $request)
     {
         $data = [];
+        $email = ['waqasarif588@gmail.com'];
         $sub_total = 0;
         $user = Auth::user();
         $cart = session()->get('cart');
@@ -112,6 +113,8 @@ class CartController extends Controller
         $order_create =  $order->save();
         $data += ['order' => $order_create];
         $order_mail = Order::where('id', $orderId)->get();
+        array_push($email,$request->email);
+        // dd($email);
         //Saving cart 
         foreach ($cart as $cart) {
             $sub_total += $cart['quantity'] * $cart['price'];
@@ -125,11 +128,12 @@ class CartController extends Controller
             $remaining = $qty[0] - $cart['quantity'];
             $update_qty =  Product::where('id', $cart['productID'])->update(array('quantity' => $remaining));
         }
-        if (Mail::to('waqasarif588@gmail.com')->send(new CheckoutMail($order_mail, $sub_total))) {
+        if (Mail::to($email)->send(new CheckoutMail($order_mail, $sub_total))) {
             $data += ['mail' => 1];
         } else {
             $data += ['mail' => 0];
         }
+        session()->forget('cart');
         return $data;
     }
 }
