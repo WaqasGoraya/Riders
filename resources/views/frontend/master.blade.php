@@ -269,33 +269,6 @@
     // cart page script end
   </script>
   @yield('custom_scripts')
-  <!-- checkout form script -->
-  <!-- <script>
-    $("#submit_form").click(function(e) {
-      e.preventDefault();
-      alert('waqas');
-      let fname: $('#firstname').val();
-      let lname: $('#lastName').val();
-      let email: $('#email').val();
-      let address: $('#address').val();
-      let country: $('#country').val();
-      let state: $('#state').val();
-      let zip: $('#zip').val();
-      alert(fname + lname + email + address + country + state + zip)
-      $.ajax({
-        url: "{{ route('doCheckout') }}",
-        method: "POST",
-        data: {
-          _token: '{{ csrf_token() }}',
-          form: form_data
-        },
-        success: function(response) {
-          console.log(response);
-        }
-      });
-
-    });
-  </script> -->
 </body>
 
 </html>

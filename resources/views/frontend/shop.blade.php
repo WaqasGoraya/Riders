@@ -118,7 +118,7 @@
                                                 <div class="product__discount__item__text">
                                                     <span>{{$data->category->name}}</span>
                                                     <h5>{{$data->name}}</h5>
-                                                        <div class="product__item__price">${{$data->price}} </div>
+                                                    <div class="product__item__price">${{$data->price}} </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -174,7 +174,7 @@
                                         <p style="color:red;">Out of Stock</p>
                                     </li>
                                     @else
-                                    <li><a href="{{route('add-to-cart', $data->id) }}"><i class="fa fa-shopping-cart"></i></a></li>
+                                    <li><a class="cart_click" id="<?= $data->id; ?>"><i class="fa fa-shopping-cart"></i></a></li>
                                     @endif
 
                                 </ul>
@@ -187,102 +187,36 @@
                     </div>
                     @endforeach
                 </div>
-                <div class="product__pagination">
+                <!-- <div class="product__pagination">
                     <a href="#">1</a>
                     <a href="#">2</a>
                     <a href="#">3</a>
                     <a href="#"><i class="fa fa-long-arrow-right"></i></a>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
 </section>
-<!-- <section class="cat_product_area section_gap"> 
-        <div class="container">
-            <div class="row flex-row-reverse">
-                <div class="col-lg-9">
-                    <div class="product_top_bar">
-                        <div class="left_dorp">
-                            <select class="sorting">
-                  <option value="1">Default sorting</option>
-                  <option value="2">Default sorting 01</option>
-                  <option value="4">Default sorting 02</option>
-                </select>
-                            <select class="show">
-                  <option value="1">Show 12</option>
-                  <option value="2">Show 14</option>
-                  <option value="4">Show 16</option>
-                </select>
-                        </div>
-                    </div>
-
-                    <div class="latest_product_inner">
-                        <div class="row">
-                            
-                            loop start -
-                                @foreach ($product as $data )
-                            <div class="col-lg-4 col-md-6">
-                                <div class="single-product">
-                                    <div class="product-img">
-                                         <img class="card-img-top card-image" src="{{asset('images/products/'. $data->image.'')}}" alt="..." id="product_image">
-                                       
-                                    </div>
-                                    <div class="product-btm">
-                                        <a href="#" class="d-block">
-                                            <h4>{{$data->name}}</h4>
-                                        </a>
-                                        <div class="mt-3">
-                                            
-                                            <span>${{$data->price}}</span>
-                                        </div>
-                                        
-                                         <div class="p_icon">
-                                           <a class="btn btn-primary" href="{{route('add-to-cart', $data->id) }}">Add To Cart </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            
-                     @endforeach
-                             
-                            loop ENd 
-                            
-                            
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-3">
-                    <div class="left_sidebar_area">
-                        <aside class="left_widgets p_filter_widgets">
-                            <div class="l_w_title">
-                                <h3>Browse Categories</h3>
-                            </div>
-                            <div class="widgets_inner">
-                                <ul class="list">
-                                    
-                                     @foreach ($product as $data )
-                                    <li>
-                                        <a href="#">{{$data->name}}</a>
-                                    </li>
-                                    @endforeach
-                                
-                                </ul>
-                            </div>
-                        </aside>
-
-                       
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>-->
-
-
-
-
-
-
-
+@endsection
+@section('custom_scripts')
+<script>
+    $(document).on('click', '.cart_click', function() {
+        let id = $(this).attr('id');
+        $.ajax({
+            'url': '{{route("add-to-cart",":id")}}'.replace(":id", id),
+            'method': 'GET',
+            success: function(res) {
+                if (res.status == 'added') {
+                   var cart = $('#counter').html();
+                   let updated = ++cart;
+                //    console.log(updated);
+                   $('#counter').html(updated);
+                    swal.fire('success', 'Product Added to cart Successfully');
+                } else {
+                    swal.fire('success', 'Your cart updated Successfully');
+                }
+            }
+        });
+    })
+</script>
 @endsection

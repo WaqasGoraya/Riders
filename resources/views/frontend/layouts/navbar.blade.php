@@ -39,13 +39,28 @@
                            @endphp
                            <a class="nav-link cart_parent" href="{{url('/cart')}}"><i class="fa-sharp fa-solid fa-cart-shopping"> </i> <span id="counter">{{$total_cart}}</span> </a>
                         </li>
+                        @if(Auth::check())
+                        <li class="nav-item d_none">
+                           <a class="nav-link" href="#"><i class="fa fa-user-circle padd_right" aria-hidden="true"></i>{{Auth::user()->name}}</a>
+                        </li>
+                        <li class="nav-item d_none">
+                           <a id="logout_btn" class="nav-link" href="{{ route('logout') }}" onclick="event.preventDefault();
+                                                 document.getElementById('logout-form').submit();">
+                              {{ __('Logout') }}
+                           </a>
+                           <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                              @csrf
+                           </form>
+                        </li>
+                        @else
+                        <li class="nav-item d_none">
+                           <a class="nav-link" href="{{url('/login')}}"><i class="fa fa-user-circle padd_right" aria-hidden="true"></i>Login</a>
+                        </li>
+                        <li class="nav-item d_none">
+                           <a class="nav-link" href="{{url('/register')}}"><i class="fa fa-user-circle padd_right" aria-hidden="true"></i>Register</a>
+                        </li>
+                        @endif
 
-                        <!--<li class="nav-item d_none">-->
-                        <!--   <a class="nav-link" href="{{url('/login')}}"><i class="fa fa-user-circle padd_right" aria-hidden="true"></i>Login</a>-->
-                        <!--</li>-->
-                        <!--<li class="nav-item d_none">-->
-                        <!--   <a class="nav-link" href="{{url('/register')}}"><i class="fa fa-user-circle padd_right" aria-hidden="true"></i>Register</a>-->
-                        <!--</li>-->
 
                      </ul>
                   </div>

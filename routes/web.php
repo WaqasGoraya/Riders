@@ -53,6 +53,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/location_edit/{id}', [LocationController::class, 'edit']);
     Route::post('/location_edit/{id}', [LocationController::class, 'update']);
     Route::get('/location_delete/{id}', [LocationController::class, 'destroy']);
+
+    //Orders
+    Route::get('/orders',[CartController::class, 'Orders']);
+    Route::get('/order-detail/{id}',[CartController::class, 'Detail']);
 });
 
 Route::resource('products', ProductController::class);

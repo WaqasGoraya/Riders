@@ -13,15 +13,15 @@ use Illuminate\Queue\SerializesModels;
 class CheckoutMail extends Mailable
 {
     use Queueable, SerializesModels;
-    public $data, $total;
+    public $data, $details;
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($data, $total)
+    public function __construct($data, $details)
     {
-        $this->total = $total;
+        $this->details = $details;
         $this->data = $data;
     }
 
@@ -46,7 +46,7 @@ class CheckoutMail extends Mailable
     {
         return new Content(
             view: 'mails.checkout',
-            with: ['data' => $this->data, 'total' => $this->total],
+            with: ['data' => $this->data, 'details' => $this->details],
         );
     }
 

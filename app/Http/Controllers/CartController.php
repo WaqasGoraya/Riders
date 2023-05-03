@@ -21,9 +21,10 @@ class CartController extends Controller
     {
         $product = Product::findOrFail($id);
         $cart = session()->get('cart', []);
-
+        $data = [];
         if (isset($cart[$id])) {
             $cart[$id]['quantity']++;
+            $data += ['status' => 'updated'];
         } else {
             $cart[$id] = [
                 "productID" => $product->id,
@@ -32,10 +33,10 @@ class CartController extends Controller
                 "price" => $product->price,
                 "image" => $product->image
             ];
+            $data += ['status' => 'added'];
         }
-
-        session()->put('cart', $cart);
-        return redirect()->back()->with('success', 'Product added to cart successfully!');
+                session()->put('cart', $cart);
+                return $data;
     }
     public function update(Request $request)
     {
@@ -98,6 +99,9 @@ class CartController extends Controller
         $user = Auth::user();
         $cart = session()->get('cart');
         $orderId = rand(10000, 1000000);
+        foreach($cart as $car){
+            $sub_total += $car['quantity'] * $car['price'];
+        }
         //Generating Order
         $order = new Order();
         $order->id = $orderId;
@@ -110,14 +114,12 @@ class CartController extends Controller
         $order->zip = $request->zip;
         $order->phone = $request->phone;
         $order->user_id = $user->id;
+        $order->total = $sub_total;
         $order_create =  $order->save();
         $data += ['order' => $order_create];
         $order_mail = Order::where('id', $orderId)->get();
         array_push($email,$request->email);
-        // dd($email);
-        //Saving cart 
         foreach ($cart as $cart) {
-            $sub_total += $cart['quantity'] * $cart['price'];
             $cartDB = new Cart();
             $cartDB->order_id = $orderId;
             $cartDB->product_id = $cart['productID'];
@@ -128,12 +130,25 @@ class CartController extends Controller
             $remaining = $qty[0] - $cart['quantity'];
             $update_qty =  Product::where('id', $cart['productID'])->update(array('quantity' => $remaining));
         }
-        if (Mail::to($email)->send(new CheckoutMail($order_mail, $sub_total))) {
+        $order_detail = Cart::where('order_id',$orderId)->get();
+        if (Mail::to($email)->send(new CheckoutMail($order_mail,$order_detail))) {
             $data += ['mail' => 1];
         } else {
             $data += ['mail' => 0];
         }
         session()->forget('cart');
         return $data;
+    }
+    public function Orders()
+    {
+       $orders = Order::get();
+       return view('layouts.order.orders',compact('orders'));
+    }
+    public function Detail($id)
+    {
+       $order = Order::where('id',$id)->get();
+       $details = Cart::where('order_id',$id)->get();
+    
+       return view('layouts.order.order-detail',compact('details', 'order'));
     }
 }
